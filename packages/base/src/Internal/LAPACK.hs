@@ -46,12 +46,12 @@ type TMMM t = t ::> t ::> t ::> Ok
 type F = Float
 type Q = Complex Float
 
-foreign import ccall unsafe "multiplyR" dgemmc :: CInt -> CInt -> TMMM R
-foreign import ccall unsafe "multiplyC" zgemmc :: CInt -> CInt -> TMMM C
-foreign import ccall unsafe "multiplyF" sgemmc :: CInt -> CInt -> TMMM F
-foreign import ccall unsafe "multiplyQ" cgemmc :: CInt -> CInt -> TMMM Q
-foreign import ccall unsafe "multiplyI" c_multiplyI :: I -> TMMM I
-foreign import ccall unsafe "multiplyL" c_multiplyL :: Z -> TMMM Z
+foreign import ccall safe "multiplyR" dgemmc :: CInt -> CInt -> TMMM R
+foreign import ccall safe "multiplyC" zgemmc :: CInt -> CInt -> TMMM C
+foreign import ccall safe "multiplyF" sgemmc :: CInt -> CInt -> TMMM F
+foreign import ccall safe "multiplyQ" cgemmc :: CInt -> CInt -> TMMM Q
+foreign import ccall safe "multiplyI" c_multiplyI :: I -> TMMM I
+foreign import ccall safe "multiplyL" c_multiplyL :: Z -> TMMM Z
 
 isT (rowOrder -> False) = 0
 isT _                   = 1
@@ -102,10 +102,10 @@ multiplyL m a b = unsafePerformIO $ do
 
 type TSVD t = t ::> t ::> R :> t ::> Ok
 
-foreign import ccall unsafe "svd_l_R" dgesvd :: TSVD R
-foreign import ccall unsafe "svd_l_C" zgesvd :: TSVD C
-foreign import ccall unsafe "svd_l_Rdd" dgesdd :: TSVD R
-foreign import ccall unsafe "svd_l_Cdd" zgesdd :: TSVD C
+foreign import ccall safe "svd_l_R" dgesvd :: TSVD R
+foreign import ccall safe "svd_l_C" zgesvd :: TSVD C
+foreign import ccall safe "svd_l_Rdd" dgesdd :: TSVD R
+foreign import ccall safe "svd_l_Cdd" zgesdd :: TSVD C
 
 -- | Full SVD of a real matrix using LAPACK's /dgesvd/.
 svdR :: Matrix Double -> (Matrix Double, Vector Double, Matrix Double)
@@ -235,12 +235,12 @@ leftSVAux f st x = unsafePerformIO $ do
 
 -----------------------------------------------------------------------------
 
-foreign import ccall unsafe "eig_l_R" dgeev :: R ::> R ::> C :> R ::> Ok
-foreign import ccall unsafe "eig_l_G" dggev :: R ::> R ::> C :> R :> R ::> R ::> Ok
-foreign import ccall unsafe "eig_l_C" zgeev :: C ::> C ::> C :> C ::> Ok
-foreign import ccall unsafe "eig_l_GC" zggev :: C ::> C ::> C :> C :> C ::> C ::> Ok
-foreign import ccall unsafe "eig_l_S" dsyev :: CInt -> R :> R ::> Ok
-foreign import ccall unsafe "eig_l_H" zheev :: CInt -> R :> C ::> Ok
+foreign import ccall safe "eig_l_R" dgeev :: R ::> R ::> C :> R ::> Ok
+foreign import ccall safe "eig_l_G" dggev :: R ::> R ::> C :> R :> R ::> R ::> Ok
+foreign import ccall safe "eig_l_C" zgeev :: C ::> C ::> C :> C ::> Ok
+foreign import ccall safe "eig_l_GC" zggev :: C ::> C ::> C :> C :> C ::> C ::> Ok
+foreign import ccall safe "eig_l_S" dsyev :: CInt -> R :> R ::> Ok
+foreign import ccall safe "eig_l_H" zheev :: CInt -> R :> C ::> Ok
 
 eigAux f st m = unsafePerformIO $ do
     a <- copy ColumnMajor m
@@ -414,8 +414,8 @@ eigOnlyH = vrev . fst. eigSHAux (zheev 0) "eigH'"
 vrev = flatten . flipud . reshape 1
 
 -----------------------------------------------------------------------------
-foreign import ccall unsafe "linearSolveR_l" dgesv :: R ::> R ::> Ok
-foreign import ccall unsafe "linearSolveC_l" zgesv :: C ::> C ::> Ok
+foreign import ccall safe "linearSolveR_l" dgesv :: R ::> R ::> Ok
+foreign import ccall safe "linearSolveC_l" zgesv :: C ::> C ::> Ok
 
 linearSolveSQAux g f st a b
     | n1==n2 && n1==r = unsafePerformIO . g $ do
@@ -445,8 +445,8 @@ mbLinearSolveC :: Matrix (Complex Double) -> Matrix (Complex Double) -> Maybe (M
 mbLinearSolveC a b = linearSolveSQAux mbCatch zgesv "linearSolveC" a b
 
 --------------------------------------------------------------------------------
-foreign import ccall unsafe "cholSolveR_l" dpotrs  :: R ::> R ::> Ok
-foreign import ccall unsafe "cholSolveC_l" zpotrs  :: C ::> C ::> Ok
+foreign import ccall safe "cholSolveR_l" dpotrs  :: R ::> R ::> Ok
+foreign import ccall safe "cholSolveC_l" zpotrs  :: C ::> C ::> Ok
 
 
 linearSolveSQAux2 g f st a b
@@ -469,10 +469,10 @@ cholSolveC :: Matrix (Complex Double) -> Matrix (Complex Double) -> Matrix (Comp
 cholSolveC a b = linearSolveSQAux2 id zpotrs "cholSolveC" (fmat a) b
 
 --------------------------------------------------------------------------------
-foreign import ccall unsafe "triSolveR_l_u" dtrtrs_u  :: R ::> R ::> Ok
-foreign import ccall unsafe "triSolveC_l_u" ztrtrs_u  :: C ::> C ::> Ok
-foreign import ccall unsafe "triSolveR_l_l" dtrtrs_l  :: R ::> R ::> Ok
-foreign import ccall unsafe "triSolveC_l_l" ztrtrs_l  :: C ::> C ::> Ok
+foreign import ccall safe "triSolveR_l_u" dtrtrs_u  :: R ::> R ::> Ok
+foreign import ccall safe "triSolveC_l_u" ztrtrs_u  :: C ::> C ::> Ok
+foreign import ccall safe "triSolveR_l_l" dtrtrs_l  :: R ::> R ::> Ok
+foreign import ccall safe "triSolveC_l_l" ztrtrs_l  :: C ::> C ::> Ok
 
 
 linearSolveTRAux2 g f st a b
@@ -499,8 +499,8 @@ triSolveC Lower a b = linearSolveTRAux2 id ztrtrs_l "triSolveC" (fmat a) b
 triSolveC Upper a b = linearSolveTRAux2 id ztrtrs_u "triSolveC" (fmat a) b
 
 --------------------------------------------------------------------------------
-foreign import ccall unsafe "triDiagSolveR_l" dgttrs  :: R :> R :> R :> R ::> Ok
-foreign import ccall unsafe "triDiagSolveC_l" zgttrs  :: C :> C :> C :> C ::> Ok
+foreign import ccall safe "triDiagSolveR_l" dgttrs  :: R :> R :> R :> R ::> Ok
+foreign import ccall safe "triDiagSolveC_l" zgttrs  :: C :> C :> C :> C ::> Ok
 
 linearSolveGTAux2 g f st dl d du b
     | ndl  == nd - 1 &&
@@ -524,10 +524,10 @@ triDiagSolveC dl d du b = linearSolveGTAux2 id zgttrs "triDiagSolveC" dl d du b
 
 -----------------------------------------------------------------------------------
 
-foreign import ccall unsafe "linearSolveLSR_l"   dgels ::           R ::> R ::> Ok
-foreign import ccall unsafe "linearSolveLSC_l"   zgels ::           C ::> C ::> Ok
-foreign import ccall unsafe "linearSolveSVDR_l" dgelss :: Double -> R ::> R ::> Ok
-foreign import ccall unsafe "linearSolveSVDC_l" zgelss :: Double -> C ::> C ::> Ok
+foreign import ccall safe "linearSolveLSR_l"   dgels ::           R ::> R ::> Ok
+foreign import ccall safe "linearSolveLSC_l"   zgels ::           C ::> C ::> Ok
+foreign import ccall safe "linearSolveSVDR_l" dgelss :: Double -> R ::> R ::> Ok
+foreign import ccall safe "linearSolveSVDC_l" zgelss :: Double -> C ::> C ::> Ok
 
 linearSolveAux f st a b
     | m == rows b = unsafePerformIO $ do
@@ -572,8 +572,8 @@ linearSolveSVDC Nothing a b = linearSolveSVDC (Just (-1)) a b
 
 -----------------------------------------------------------------------------------
 
-foreign import ccall unsafe "chol_l_H" zpotrf :: C ::> Ok
-foreign import ccall unsafe "chol_l_S" dpotrf :: R ::> Ok
+foreign import ccall safe "chol_l_H" zpotrf :: C ::> Ok
+foreign import ccall safe "chol_l_S" dpotrf :: R ::> Ok
 
 cholAux f st a = do
     r <- copy ColumnMajor a
@@ -600,8 +600,8 @@ mbCholS =  unsafePerformIO . mbCatch . cholAux dpotrf "cholS"
 
 type TMVM t = t ::> t :> t ::> Ok
 
-foreign import ccall unsafe "qr_l_R" dgeqr2 :: R :> R ::> Ok
-foreign import ccall unsafe "qr_l_C" zgeqr2 :: C :> C ::> Ok
+foreign import ccall safe "qr_l_R" dgeqr2 :: R :> R ::> Ok
+foreign import ccall safe "qr_l_C" zgeqr2 :: C :> C ::> Ok
 
 -- | QR factorization of a real matrix, using LAPACK's /dgeqr2/.
 qrR :: Matrix Double -> (Matrix Double, Vector Double)
@@ -621,8 +621,8 @@ qrAux f st a = unsafePerformIO $ do
     n = cols a
     mn = min m n
 
-foreign import ccall unsafe "c_dorgqr" dorgqr :: R :> R ::> Ok
-foreign import ccall unsafe "c_zungqr" zungqr :: C :> C ::> Ok
+foreign import ccall safe "c_dorgqr" dorgqr :: R :> R ::> Ok
+foreign import ccall safe "c_zungqr" zungqr :: C :> C ::> Ok
 
 -- | build rotation from reflectors
 qrgrR :: Int -> (Matrix Double, Vector Double) -> Matrix Double
@@ -639,8 +639,8 @@ qrgrAux f st n (a, tau) = unsafePerformIO $ do
     tau' = vjoin [tau, constantD 0 n]
 
 -----------------------------------------------------------------------------------
-foreign import ccall unsafe "hess_l_R" dgehrd :: R :> R ::> Ok
-foreign import ccall unsafe "hess_l_C" zgehrd :: C :> C ::> Ok
+foreign import ccall safe "hess_l_R" dgehrd :: R :> R ::> Ok
+foreign import ccall safe "hess_l_C" zgehrd :: C :> C ::> Ok
 
 -- | Hessenberg factorization of a square real matrix, using LAPACK's /dgehrd/.
 hessR :: Matrix Double -> (Matrix Double, Vector Double)
@@ -661,8 +661,8 @@ hessAux f st a = unsafePerformIO $ do
     mn = min m n
 
 -----------------------------------------------------------------------------------
-foreign import ccall unsafe "schur_l_R" dgees :: R ::> R ::> Ok
-foreign import ccall unsafe "schur_l_C" zgees :: C ::> C ::> Ok
+foreign import ccall safe "schur_l_R" dgees :: R ::> R ::> Ok
+foreign import ccall safe "schur_l_C" zgees :: C ::> C ::> Ok
 
 -- | Schur factorization of a square real matrix, using LAPACK's /dgees/.
 schurR :: Matrix Double -> (Matrix Double, Matrix Double)
@@ -681,8 +681,8 @@ schurAux f st a = unsafePerformIO $ do
     n = rows a
 
 -----------------------------------------------------------------------------------
-foreign import ccall unsafe "lu_l_R" dgetrf :: R :> R ::> Ok
-foreign import ccall unsafe "lu_l_C" zgetrf :: R :> C ::> Ok
+foreign import ccall safe "lu_l_R" dgetrf :: R :> R ::> Ok
+foreign import ccall safe "lu_l_C" zgetrf :: R :> C ::> Ok
 
 -- | LU factorization of a general real matrix, using LAPACK's /dgetrf/.
 luR :: Matrix Double -> (Matrix Double, [Int])
@@ -703,8 +703,8 @@ luAux f st a = unsafePerformIO $ do
 
 -----------------------------------------------------------------------------------
 
-foreign import ccall unsafe "luS_l_R" dgetrs :: R ::> R :> R ::> Ok
-foreign import ccall unsafe "luS_l_C" zgetrs :: C ::> R :> C ::> Ok
+foreign import ccall safe "luS_l_R" dgetrs :: R ::> R :> R ::> Ok
+foreign import ccall safe "luS_l_C" zgetrs :: C ::> R :> C ::> Ok
 
 -- | Solve a real linear system from a precomputed LU decomposition ('luR'), using LAPACK's /dgetrs/.
 lusR :: Matrix Double -> [Int] -> Matrix Double -> Matrix Double
@@ -727,8 +727,8 @@ lusAux f st a piv b
     piv' = fromList (map (fromIntegral.succ) piv) :: Vector Double
 
 -----------------------------------------------------------------------------------
-foreign import ccall unsafe "ldl_R" dsytrf :: R :> R ::> Ok
-foreign import ccall unsafe "ldl_C" zhetrf :: R :> C ::> Ok
+foreign import ccall safe "ldl_R" dsytrf :: R :> R ::> Ok
+foreign import ccall safe "ldl_C" zhetrf :: R :> C ::> Ok
 
 -- | LDL factorization of a symmetric real matrix, using LAPACK's /dsytrf/.
 ldlR :: Matrix Double -> (Matrix Double, [Int])
@@ -746,8 +746,8 @@ ldlAux f st a = unsafePerformIO $ do
 
 -----------------------------------------------------------------------------------
 
-foreign import ccall unsafe "ldl_S_R" dsytrs :: R ::> R :> R ::> Ok
-foreign import ccall unsafe "ldl_S_C" zsytrs :: C ::> R :> C ::> Ok
+foreign import ccall safe "ldl_S_R" dsytrs :: R ::> R :> R ::> Ok
+foreign import ccall safe "ldl_S_C" zsytrs :: C ::> R :> C ::> Ok
 
 -- | Solve a real linear system from a precomputed LDL decomposition ('ldlR'), using LAPACK's /dsytrs/.
 ldlsR :: Matrix Double -> [Int] -> Matrix Double -> Matrix Double
