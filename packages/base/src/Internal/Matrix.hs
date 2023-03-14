@@ -468,12 +468,12 @@ extractAux f ord m moder vr modec vc = do
 
 type Extr x = CInt -> CInt -> CIdxs (CIdxs (OM x (OM x (IO CInt))))
 
-foreign import ccall unsafe "extractD" c_extractD :: Extr Double
-foreign import ccall unsafe "extractF" c_extractF :: Extr Float
-foreign import ccall unsafe "extractC" c_extractC :: Extr (Complex Double)
-foreign import ccall unsafe "extractQ" c_extractQ :: Extr (Complex Float)
-foreign import ccall unsafe "extractI" c_extractI :: Extr CInt
-foreign import ccall unsafe "extractL" c_extractL :: Extr Z
+foreign import ccall safe "extractD" c_extractD :: Extr Double
+foreign import ccall safe "extractF" c_extractF :: Extr Float
+foreign import ccall safe "extractC" c_extractC :: Extr (Complex Double)
+foreign import ccall safe "extractQ" c_extractQ :: Extr (Complex Float)
+foreign import ccall safe "extractI" c_extractI :: Extr CInt
+foreign import ccall safe "extractL" c_extractL :: Extr Z
 
 ---------------------------------------------------------------
 
@@ -484,12 +484,12 @@ setRectAux f i j m r = (m #! r) (f (fi i) (fi j)) #|"setRect"
 
 type SetRect x = I -> I -> x ::> x::> Ok
 
-foreign import ccall unsafe "setRectD" c_setRectD :: SetRect Double
-foreign import ccall unsafe "setRectF" c_setRectF :: SetRect Float
-foreign import ccall unsafe "setRectC" c_setRectC :: SetRect (Complex Double)
-foreign import ccall unsafe "setRectQ" c_setRectQ :: SetRect (Complex Float)
-foreign import ccall unsafe "setRectI" c_setRectI :: SetRect I
-foreign import ccall unsafe "setRectL" c_setRectL :: SetRect Z
+foreign import ccall safe "setRectD" c_setRectD :: SetRect Double
+foreign import ccall safe "setRectF" c_setRectF :: SetRect Float
+foreign import ccall safe "setRectC" c_setRectC :: SetRect (Complex Double)
+foreign import ccall safe "setRectQ" c_setRectQ :: SetRect (Complex Float)
+foreign import ccall safe "setRectI" c_setRectI :: SetRect I
+foreign import ccall safe "setRectL" c_setRectL :: SetRect Z
 
 --------------------------------------------------------------------------------
 
@@ -518,15 +518,15 @@ sortValI = sortG c_sort_valI
 sortValL :: Vector Z -> Vector Z
 sortValL = sortG c_sort_valL
 
-foreign import ccall unsafe "sort_indexD" c_sort_indexD :: CV Double (CV CInt (IO CInt))
-foreign import ccall unsafe "sort_indexF" c_sort_indexF :: CV Float  (CV CInt (IO CInt))
-foreign import ccall unsafe "sort_indexI" c_sort_indexI :: CV CInt   (CV CInt (IO CInt))
-foreign import ccall unsafe "sort_indexL" c_sort_indexL :: Z :> I :> Ok
+foreign import ccall safe "sort_indexD" c_sort_indexD :: CV Double (CV CInt (IO CInt))
+foreign import ccall safe "sort_indexF" c_sort_indexF :: CV Float  (CV CInt (IO CInt))
+foreign import ccall safe "sort_indexI" c_sort_indexI :: CV CInt   (CV CInt (IO CInt))
+foreign import ccall safe "sort_indexL" c_sort_indexL :: Z :> I :> Ok
 
-foreign import ccall unsafe "sort_valuesD" c_sort_valD :: CV Double (CV Double (IO CInt))
-foreign import ccall unsafe "sort_valuesF" c_sort_valF :: CV Float  (CV Float (IO CInt))
-foreign import ccall unsafe "sort_valuesI" c_sort_valI :: CV CInt   (CV CInt (IO CInt))
-foreign import ccall unsafe "sort_valuesL" c_sort_valL :: Z :> Z :> Ok
+foreign import ccall safe "sort_valuesD" c_sort_valD :: CV Double (CV Double (IO CInt))
+foreign import ccall safe "sort_valuesF" c_sort_valF :: CV Float  (CV Float (IO CInt))
+foreign import ccall safe "sort_valuesI" c_sort_valI :: CV CInt   (CV CInt (IO CInt))
+foreign import ccall safe "sort_valuesL" c_sort_valL :: Z :> Z :> Ok
 
 --------------------------------------------------------------------------------
 
@@ -547,10 +547,10 @@ compareI = compareG c_compareI
 compareL :: Vector Z -> Vector Z -> Vector CInt
 compareL = compareG c_compareL
 
-foreign import ccall unsafe "compareD" c_compareD :: CV Double (CV Double (CV CInt (IO CInt)))
-foreign import ccall unsafe "compareF" c_compareF :: CV Float (CV Float  (CV CInt (IO CInt)))
-foreign import ccall unsafe "compareI" c_compareI :: CV CInt (CV CInt   (CV CInt (IO CInt)))
-foreign import ccall unsafe "compareL" c_compareL :: Z :> Z :> I :> Ok
+foreign import ccall safe "compareD" c_compareD :: CV Double (CV Double (CV CInt (IO CInt)))
+foreign import ccall safe "compareF" c_compareF :: CV Float (CV Float  (CV CInt (IO CInt)))
+foreign import ccall safe "compareI" c_compareI :: CV CInt (CV CInt   (CV CInt (IO CInt)))
+foreign import ccall safe "compareL" c_compareL :: Z :> Z :> I :> Ok
 
 --------------------------------------------------------------------------------
 
@@ -585,12 +585,12 @@ selectQ = selectG c_selectQ
 
 type Sel x = CV CInt (CV x (CV x (CV x (CV x (IO CInt)))))
 
-foreign import ccall unsafe "chooseD" c_selectD :: Sel Double
-foreign import ccall unsafe "chooseF" c_selectF :: Sel Float
-foreign import ccall unsafe "chooseI" c_selectI :: Sel CInt
-foreign import ccall unsafe "chooseC" c_selectC :: Sel (Complex Double)
-foreign import ccall unsafe "chooseQ" c_selectQ :: Sel (Complex Float)
-foreign import ccall unsafe "chooseL" c_selectL :: Sel Z
+foreign import ccall safe "chooseD" c_selectD :: Sel Double
+foreign import ccall safe "chooseF" c_selectF :: Sel Float
+foreign import ccall safe "chooseI" c_selectI :: Sel CInt
+foreign import ccall safe "chooseC" c_selectC :: Sel (Complex Double)
+foreign import ccall safe "chooseQ" c_selectQ :: Sel (Complex Float)
+foreign import ccall safe "chooseL" c_selectL :: Sel Z
 
 ---------------------------------------------------------------------------
 
@@ -621,12 +621,12 @@ remapQ = remapG c_remapQ
 
 type Rem x = OM CInt (OM CInt (OM x (OM x (IO CInt))))
 
-foreign import ccall unsafe "remapD" c_remapD :: Rem Double
-foreign import ccall unsafe "remapF" c_remapF :: Rem Float
-foreign import ccall unsafe "remapI" c_remapI :: Rem CInt
-foreign import ccall unsafe "remapC" c_remapC :: Rem (Complex Double)
-foreign import ccall unsafe "remapQ" c_remapQ :: Rem (Complex Float)
-foreign import ccall unsafe "remapL" c_remapL :: Rem Z
+foreign import ccall safe "remapD" c_remapD :: Rem Double
+foreign import ccall safe "remapF" c_remapF :: Rem Float
+foreign import ccall safe "remapI" c_remapI :: Rem CInt
+foreign import ccall safe "remapC" c_remapC :: Rem (Complex Double)
+foreign import ccall safe "remapQ" c_remapQ :: Rem (Complex Float)
+foreign import ccall safe "remapL" c_remapL :: Rem Z
 
 --------------------------------------------------------------------------------
 
@@ -640,14 +640,14 @@ rowOpAux f c x i1 i2 j1 j2 m = do
 
 type RowOp x = CInt -> Ptr x -> CInt -> CInt -> CInt -> CInt -> x ::> Ok
 
-foreign import ccall unsafe "rowop_double"  c_rowOpD :: RowOp R
-foreign import ccall unsafe "rowop_float"   c_rowOpF :: RowOp Float
-foreign import ccall unsafe "rowop_TCD"     c_rowOpC :: RowOp C
-foreign import ccall unsafe "rowop_TCF"     c_rowOpQ :: RowOp (Complex Float)
-foreign import ccall unsafe "rowop_int32_t" c_rowOpI :: RowOp I
-foreign import ccall unsafe "rowop_int64_t" c_rowOpL :: RowOp Z
-foreign import ccall unsafe "rowop_mod_int32_t" c_rowOpMI :: I -> RowOp I
-foreign import ccall unsafe "rowop_mod_int64_t" c_rowOpML :: Z -> RowOp Z
+foreign import ccall safe "rowop_double"  c_rowOpD :: RowOp R
+foreign import ccall safe "rowop_float"   c_rowOpF :: RowOp Float
+foreign import ccall safe "rowop_TCD"     c_rowOpC :: RowOp C
+foreign import ccall safe "rowop_TCF"     c_rowOpQ :: RowOp (Complex Float)
+foreign import ccall safe "rowop_int32_t" c_rowOpI :: RowOp I
+foreign import ccall safe "rowop_int64_t" c_rowOpL :: RowOp Z
+foreign import ccall safe "rowop_mod_int32_t" c_rowOpMI :: I -> RowOp I
+foreign import ccall safe "rowop_mod_int64_t" c_rowOpML :: Z -> RowOp Z
 
 --------------------------------------------------------------------------------
 
@@ -658,14 +658,14 @@ gemmg f v m1 m2 m3 = (v # m1 # m2 #! m3) f #|"gemmg"
 
 type Tgemm x = x :> x ::> x ::> x ::> Ok
 
-foreign import ccall unsafe "gemm_double"  c_gemmD :: Tgemm R
-foreign import ccall unsafe "gemm_float"   c_gemmF :: Tgemm Float
-foreign import ccall unsafe "gemm_TCD"     c_gemmC :: Tgemm C
-foreign import ccall unsafe "gemm_TCF"     c_gemmQ :: Tgemm (Complex Float)
-foreign import ccall unsafe "gemm_int32_t" c_gemmI :: Tgemm I
-foreign import ccall unsafe "gemm_int64_t" c_gemmL :: Tgemm Z
-foreign import ccall unsafe "gemm_mod_int32_t" c_gemmMI :: I -> Tgemm I
-foreign import ccall unsafe "gemm_mod_int64_t" c_gemmML :: Z -> Tgemm Z
+foreign import ccall safe "gemm_double"  c_gemmD :: Tgemm R
+foreign import ccall safe "gemm_float"   c_gemmF :: Tgemm Float
+foreign import ccall safe "gemm_TCD"     c_gemmC :: Tgemm C
+foreign import ccall safe "gemm_TCF"     c_gemmQ :: Tgemm (Complex Float)
+foreign import ccall safe "gemm_int32_t" c_gemmI :: Tgemm I
+foreign import ccall safe "gemm_int64_t" c_gemmL :: Tgemm Z
+foreign import ccall safe "gemm_mod_int32_t" c_gemmMI :: I -> Tgemm I
+foreign import ccall safe "gemm_mod_int64_t" c_gemmML :: Z -> Tgemm Z
 
 --------------------------------------------------------------------------------
 
@@ -681,12 +681,12 @@ reorderAux f s d v = unsafePerformIO $ do
 
 type Reorder x = CV CInt (CV CInt (CV CInt (CV x (CV x (IO CInt)))))
 
-foreign import ccall unsafe "reorderD" c_reorderD :: Reorder Double
-foreign import ccall unsafe "reorderF" c_reorderF :: Reorder Float
-foreign import ccall unsafe "reorderI" c_reorderI :: Reorder CInt
-foreign import ccall unsafe "reorderC" c_reorderC :: Reorder (Complex Double)
-foreign import ccall unsafe "reorderQ" c_reorderQ :: Reorder (Complex Float)
-foreign import ccall unsafe "reorderL" c_reorderL :: Reorder Z
+foreign import ccall safe "reorderD" c_reorderD :: Reorder Double
+foreign import ccall safe "reorderF" c_reorderF :: Reorder Float
+foreign import ccall safe "reorderI" c_reorderI :: Reorder CInt
+foreign import ccall safe "reorderC" c_reorderC :: Reorder (Complex Double)
+foreign import ccall safe "reorderQ" c_reorderQ :: Reorder (Complex Float)
+foreign import ccall safe "reorderL" c_reorderL :: Reorder Z
 
 -- | Transpose an array with dimensions @dims@ by making a copy using @strides@. For example, for an array with 3 indices,
 --   @(reorderVector strides dims v) ! ((i * dims ! 1 + j) * dims ! 2 + k) == v ! (i * strides ! 0 + j * strides ! 1 + k * strides ! 2)@
@@ -700,7 +700,7 @@ reorderVector = reorderV
 
 --------------------------------------------------------------------------------
 
-foreign import ccall unsafe "saveMatrix" c_saveMatrix
+foreign import ccall safe "saveMatrix" c_saveMatrix
     :: CString -> CString -> Double ::> Ok
 
 {- | save a matrix as a 2D ASCII table

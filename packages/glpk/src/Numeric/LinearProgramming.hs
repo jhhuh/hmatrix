@@ -280,7 +280,7 @@ mkConstrS n objfun b1 = fromLists (ob ++ co) where
 --a ## b = applyRaw a b
 --{-# INLINE (##) #-}
 
-foreign import ccall unsafe "c_simplex_sparse" c_simplex_sparse
+foreign import ccall safe "c_simplex_sparse" c_simplex_sparse
     :: CInt -> CInt                  -- rows and cols
     -> CInt -> CInt -> Ptr Double    -- coeffs
     -> CInt -> CInt -> Ptr Double    -- bounds
@@ -293,7 +293,7 @@ simplexSparse m n c b = unsafePerformIO $ do
     ((cmat c) `applyRaw` ((cmat b) `applyRaw` (s `applyRaw` id))) (c_simplex_sparse (fi m) (fi n)) #|"c_simplex_sparse"
     return s
 
-foreign import ccall unsafe "c_exact_sparse" c_exact_sparse
+foreign import ccall safe "c_exact_sparse" c_exact_sparse
     :: CInt -> CInt                  -- rows and cols
     -> CInt -> CInt -> Ptr Double    -- coeffs
     -> CInt -> CInt -> Ptr Double    -- bounds

@@ -30,6 +30,6 @@ dss CSR{..} b = unsafePerformIO $ do
     c_dss `apply` csrVals `apply` csrCols `apply` csrRows `apply` b `apply` r #|"dss"
     return r
 
-foreign import ccall unsafe "dss"
+foreign import ccall safe "dss"
   c_dss :: SMxV
 

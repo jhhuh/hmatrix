@@ -33,7 +33,7 @@ main = do
     print $ myDiag (tr x)
 
 -----------------------------------------------------
-foreign import ccall unsafe "c_diag" cDiag :: Double ::> Double :> Double ::> Ok
+foreign import ccall safe "c_diag" cDiag :: Double ::> Double :> Double ::> Ok
 
 myDiag m = unsafePerformIO $ do
     y <- createVector (min r c)

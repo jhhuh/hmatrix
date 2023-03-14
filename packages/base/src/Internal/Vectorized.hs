@@ -124,12 +124,12 @@ sumg f x = unsafePerformIO $ do
 
 type TVV t = t :> t :> Ok
 
-foreign import ccall unsafe "sumF" c_sumF :: TVV Float
-foreign import ccall unsafe "sumR" c_sumR :: TVV Double
-foreign import ccall unsafe "sumQ" c_sumQ :: TVV (Complex Float)
-foreign import ccall unsafe "sumC" c_sumC :: TVV (Complex Double)
-foreign import ccall unsafe "sumI" c_sumI :: I -> TVV I
-foreign import ccall unsafe "sumL" c_sumL :: Z -> TVV Z
+foreign import ccall safe "sumF" c_sumF :: TVV Float
+foreign import ccall safe "sumR" c_sumR :: TVV Double
+foreign import ccall safe "sumQ" c_sumQ :: TVV (Complex Float)
+foreign import ccall safe "sumC" c_sumC :: TVV (Complex Double)
+foreign import ccall safe "sumI" c_sumI :: I -> TVV I
+foreign import ccall safe "sumL" c_sumL :: Z -> TVV Z
 
 -- | product of elements
 prodF :: Vector Float -> Float
@@ -161,12 +161,12 @@ prodg f x = unsafePerformIO $ do
     return $ r @> 0
 
 
-foreign import ccall unsafe "prodF" c_prodF :: TVV Float
-foreign import ccall unsafe "prodR" c_prodR :: TVV Double
-foreign import ccall unsafe "prodQ" c_prodQ :: TVV (Complex Float)
-foreign import ccall unsafe "prodC" c_prodC :: TVV (Complex Double)
-foreign import ccall unsafe "prodI" c_prodI :: I -> TVV I
-foreign import ccall unsafe "prodL" c_prodL :: Z -> TVV Z
+foreign import ccall safe "prodF" c_prodF :: TVV Float
+foreign import ccall safe "prodR" c_prodR :: TVV Double
+foreign import ccall safe "prodQ" c_prodQ :: TVV (Complex Float)
+foreign import ccall safe "prodC" c_prodC :: TVV (Complex Double)
+foreign import ccall safe "prodI" c_prodI :: I -> TVV I
+foreign import ccall safe "prodL" c_prodL :: Z -> TVV Z
 
 ------------------------------------------------------------------
 
@@ -210,37 +210,37 @@ vectorZipAux fun code u v = unsafePerformIO $ do
 toScalarR :: FunCodeS -> Vector Double -> Double
 toScalarR oper =  toScalarAux c_toScalarR (fromei oper)
 
-foreign import ccall unsafe "toScalarR" c_toScalarR :: CInt -> TVV Double
+foreign import ccall safe "toScalarR" c_toScalarR :: CInt -> TVV Double
 
 -- | obtains different functions of a vector: norm1, norm2, max, min, posmax, posmin, etc.
 toScalarF :: FunCodeS -> Vector Float -> Float
 toScalarF oper =  toScalarAux c_toScalarF (fromei oper)
 
-foreign import ccall unsafe "toScalarF" c_toScalarF :: CInt -> TVV Float
+foreign import ccall safe "toScalarF" c_toScalarF :: CInt -> TVV Float
 
 -- | obtains different functions of a vector: only norm1, norm2
 toScalarC :: FunCodeS -> Vector (Complex Double) -> Double
 toScalarC oper =  toScalarAux c_toScalarC (fromei oper)
 
-foreign import ccall unsafe "toScalarC" c_toScalarC :: CInt -> Complex Double :> Double :> Ok
+foreign import ccall safe "toScalarC" c_toScalarC :: CInt -> Complex Double :> Double :> Ok
 
 -- | obtains different functions of a vector: only norm1, norm2
 toScalarQ :: FunCodeS -> Vector (Complex Float) -> Float
 toScalarQ oper =  toScalarAux c_toScalarQ (fromei oper)
 
-foreign import ccall unsafe "toScalarQ" c_toScalarQ :: CInt -> Complex Float :> Float :> Ok
+foreign import ccall safe "toScalarQ" c_toScalarQ :: CInt -> Complex Float :> Float :> Ok
 
 -- | obtains different functions of a vector: norm1, norm2, max, min, posmax, posmin, etc.
 toScalarI :: FunCodeS -> Vector CInt -> CInt
 toScalarI oper =  toScalarAux c_toScalarI (fromei oper)
 
-foreign import ccall unsafe "toScalarI" c_toScalarI :: CInt -> TVV CInt
+foreign import ccall safe "toScalarI" c_toScalarI :: CInt -> TVV CInt
 
 -- | obtains different functions of a vector: norm1, norm2, max, min, posmax, posmin, etc.
 toScalarL :: FunCodeS -> Vector Z -> Z
 toScalarL oper =  toScalarAux c_toScalarL (fromei oper)
 
-foreign import ccall unsafe "toScalarL" c_toScalarL :: CInt -> TVV Z
+foreign import ccall safe "toScalarL" c_toScalarL :: CInt -> TVV Z
 
 
 ------------------------------------------------------------------
@@ -249,37 +249,37 @@ foreign import ccall unsafe "toScalarL" c_toScalarL :: CInt -> TVV Z
 vectorMapR :: FunCodeV -> Vector Double -> Vector Double
 vectorMapR = vectorMapAux c_vectorMapR
 
-foreign import ccall unsafe "mapR" c_vectorMapR :: CInt -> TVV Double
+foreign import ccall safe "mapR" c_vectorMapR :: CInt -> TVV Double
 
 -- | map of complex vectors with given function
 vectorMapC :: FunCodeV -> Vector (Complex Double) -> Vector (Complex Double)
 vectorMapC oper = vectorMapAux c_vectorMapC (fromei oper)
 
-foreign import ccall unsafe "mapC" c_vectorMapC :: CInt -> TVV (Complex Double)
+foreign import ccall safe "mapC" c_vectorMapC :: CInt -> TVV (Complex Double)
 
 -- | map of real vectors with given function
 vectorMapF :: FunCodeV -> Vector Float -> Vector Float
 vectorMapF = vectorMapAux c_vectorMapF
 
-foreign import ccall unsafe "mapF" c_vectorMapF :: CInt -> TVV Float
+foreign import ccall safe "mapF" c_vectorMapF :: CInt -> TVV Float
 
 -- | map of real vectors with given function
 vectorMapQ :: FunCodeV -> Vector (Complex Float) -> Vector (Complex Float)
 vectorMapQ = vectorMapAux c_vectorMapQ
 
-foreign import ccall unsafe "mapQ" c_vectorMapQ :: CInt -> TVV (Complex Float)
+foreign import ccall safe "mapQ" c_vectorMapQ :: CInt -> TVV (Complex Float)
 
 -- | map of real vectors with given function
 vectorMapI :: FunCodeV -> Vector CInt -> Vector CInt
 vectorMapI = vectorMapAux c_vectorMapI
 
-foreign import ccall unsafe "mapI" c_vectorMapI :: CInt -> TVV CInt
+foreign import ccall safe "mapI" c_vectorMapI :: CInt -> TVV CInt
 
 -- | map of real vectors with given function
 vectorMapL :: FunCodeV -> Vector Z -> Vector Z
 vectorMapL = vectorMapAux c_vectorMapL
 
-foreign import ccall unsafe "mapL" c_vectorMapL :: CInt -> TVV Z
+foreign import ccall safe "mapL" c_vectorMapL :: CInt -> TVV Z
 
 -------------------------------------------------------------------
 
@@ -287,37 +287,37 @@ foreign import ccall unsafe "mapL" c_vectorMapL :: CInt -> TVV Z
 vectorMapValR :: FunCodeSV -> Double -> Vector Double -> Vector Double
 vectorMapValR oper = vectorMapValAux c_vectorMapValR (fromei oper)
 
-foreign import ccall unsafe "mapValR" c_vectorMapValR :: CInt -> Ptr Double -> TVV Double
+foreign import ccall safe "mapValR" c_vectorMapValR :: CInt -> Ptr Double -> TVV Double
 
 -- | map of complex vectors with given function
 vectorMapValC :: FunCodeSV -> Complex Double -> Vector (Complex Double) -> Vector (Complex Double)
 vectorMapValC = vectorMapValAux c_vectorMapValC
 
-foreign import ccall unsafe "mapValC" c_vectorMapValC :: CInt -> Ptr (Complex Double) -> TVV (Complex Double)
+foreign import ccall safe "mapValC" c_vectorMapValC :: CInt -> Ptr (Complex Double) -> TVV (Complex Double)
 
 -- | map of real vectors with given function
 vectorMapValF :: FunCodeSV -> Float -> Vector Float -> Vector Float
 vectorMapValF oper = vectorMapValAux c_vectorMapValF (fromei oper)
 
-foreign import ccall unsafe "mapValF" c_vectorMapValF :: CInt -> Ptr Float -> TVV Float
+foreign import ccall safe "mapValF" c_vectorMapValF :: CInt -> Ptr Float -> TVV Float
 
 -- | map of complex vectors with given function
 vectorMapValQ :: FunCodeSV -> Complex Float -> Vector (Complex Float) -> Vector (Complex Float)
 vectorMapValQ oper = vectorMapValAux c_vectorMapValQ (fromei oper)
 
-foreign import ccall unsafe "mapValQ" c_vectorMapValQ :: CInt -> Ptr (Complex Float) -> TVV (Complex Float)
+foreign import ccall safe "mapValQ" c_vectorMapValQ :: CInt -> Ptr (Complex Float) -> TVV (Complex Float)
 
 -- | map of real vectors with given function
 vectorMapValI :: FunCodeSV -> CInt -> Vector CInt -> Vector CInt
 vectorMapValI oper = vectorMapValAux c_vectorMapValI (fromei oper)
 
-foreign import ccall unsafe "mapValI" c_vectorMapValI :: CInt -> Ptr CInt -> TVV CInt
+foreign import ccall safe "mapValI" c_vectorMapValI :: CInt -> Ptr CInt -> TVV CInt
 
 -- | map of real vectors with given function
 vectorMapValL :: FunCodeSV -> Z -> Vector Z -> Vector Z
 vectorMapValL oper = vectorMapValAux c_vectorMapValL (fromei oper)
 
-foreign import ccall unsafe "mapValL" c_vectorMapValL :: CInt -> Ptr Z -> TVV Z
+foreign import ccall safe "mapValL" c_vectorMapValL :: CInt -> Ptr Z -> TVV Z
 
 
 -------------------------------------------------------------------
@@ -328,41 +328,41 @@ type TVVV t = t :> t :> t :> Ok
 vectorZipR :: FunCodeVV -> Vector Double -> Vector Double -> Vector Double
 vectorZipR = vectorZipAux c_vectorZipR
 
-foreign import ccall unsafe "zipR" c_vectorZipR :: CInt -> TVVV Double
+foreign import ccall safe "zipR" c_vectorZipR :: CInt -> TVVV Double
 
 -- | elementwise operation on complex vectors
 vectorZipC :: FunCodeVV -> Vector (Complex Double) -> Vector (Complex Double) -> Vector (Complex Double)
 vectorZipC = vectorZipAux c_vectorZipC
 
-foreign import ccall unsafe "zipC" c_vectorZipC :: CInt -> TVVV (Complex Double)
+foreign import ccall safe "zipC" c_vectorZipC :: CInt -> TVVV (Complex Double)
 
 -- | elementwise operation on real vectors
 vectorZipF :: FunCodeVV -> Vector Float -> Vector Float -> Vector Float
 vectorZipF = vectorZipAux c_vectorZipF
 
-foreign import ccall unsafe "zipF" c_vectorZipF :: CInt -> TVVV Float
+foreign import ccall safe "zipF" c_vectorZipF :: CInt -> TVVV Float
 
 -- | elementwise operation on complex vectors
 vectorZipQ :: FunCodeVV -> Vector (Complex Float) -> Vector (Complex Float) -> Vector (Complex Float)
 vectorZipQ = vectorZipAux c_vectorZipQ
 
-foreign import ccall unsafe "zipQ" c_vectorZipQ :: CInt -> TVVV (Complex Float)
+foreign import ccall safe "zipQ" c_vectorZipQ :: CInt -> TVVV (Complex Float)
 
 -- | elementwise operation on CInt vectors
 vectorZipI :: FunCodeVV -> Vector CInt -> Vector CInt -> Vector CInt
 vectorZipI = vectorZipAux c_vectorZipI
 
-foreign import ccall unsafe "zipI" c_vectorZipI :: CInt -> TVVV CInt
+foreign import ccall safe "zipI" c_vectorZipI :: CInt -> TVVV CInt
 
 -- | elementwise operation on CInt vectors
 vectorZipL :: FunCodeVV -> Vector Z -> Vector Z -> Vector Z
 vectorZipL = vectorZipAux c_vectorZipL
 
-foreign import ccall unsafe "zipL" c_vectorZipL :: CInt -> TVVV Z
+foreign import ccall safe "zipL" c_vectorZipL :: CInt -> TVVV Z
 
 --------------------------------------------------------------------------------
 
-foreign import ccall unsafe "vectorScan" c_vectorScan
+foreign import ccall safe "vectorScan" c_vectorScan
     :: CString -> Ptr CInt -> Ptr (Ptr Double) -> IO CInt
 
 vectorScan :: FilePath -> IO (Vector Double)
@@ -401,7 +401,7 @@ randomVector seed dist n = unsafePerformIO $ do
     (r # id) (c_random_vector (fi seed) ((fi.fromEnum) dist)) #|"randomVector"
     return r
 
-foreign import ccall unsafe "random_vector" c_random_vector :: CInt -> CInt -> Double :> Ok
+foreign import ccall safe "random_vector" c_random_vector :: CInt -> CInt -> Double :> Ok
 
 --------------------------------------------------------------------------------
 
@@ -411,7 +411,7 @@ roundVector v = unsafePerformIO $ do
     (v #! r) c_round_vector #|"roundVector"
     return r
 
-foreign import ccall unsafe "round_vector" c_round_vector :: TVV Double
+foreign import ccall safe "round_vector" c_round_vector :: TVV Double
 
 --------------------------------------------------------------------------------
 
@@ -426,7 +426,7 @@ range n = unsafePerformIO $ do
     (r # id) c_range_vector #|"range"
     return r
 
-foreign import ccall unsafe "range_vector" c_range_vector :: CInt :> Ok
+foreign import ccall safe "range_vector" c_range_vector :: CInt :> Ok
 
 
 float2DoubleV :: Vector Float -> Vector Double
@@ -468,16 +468,16 @@ tog f v = unsafePerformIO $ do
     (v #! r) f #|"tog"
     return r
 
-foreign import ccall unsafe "float2double" c_float2double :: Float :> Double :> Ok
-foreign import ccall unsafe "double2float" c_double2float :: Double :> Float :> Ok
-foreign import ccall unsafe "int2double"   c_int2double   :: CInt :> Double :> Ok
-foreign import ccall unsafe "double2int"   c_double2int   :: Double :> CInt :> Ok
-foreign import ccall unsafe "long2double"  c_long2double   :: Z :> Double :> Ok
-foreign import ccall unsafe "double2long"  c_double2long   :: Double :> Z :> Ok
-foreign import ccall unsafe "int2float"    c_int2float    :: CInt :> Float :> Ok
-foreign import ccall unsafe "float2int"    c_float2int    :: Float :> CInt :> Ok
-foreign import ccall unsafe "int2long"    c_int2long    :: I :> Z :> Ok
-foreign import ccall unsafe "long2int"    c_long2int    :: Z :> I :> Ok
+foreign import ccall safe "float2double" c_float2double :: Float :> Double :> Ok
+foreign import ccall safe "double2float" c_double2float :: Double :> Float :> Ok
+foreign import ccall safe "int2double"   c_int2double   :: CInt :> Double :> Ok
+foreign import ccall safe "double2int"   c_double2int   :: Double :> CInt :> Ok
+foreign import ccall safe "long2double"  c_long2double   :: Z :> Double :> Ok
+foreign import ccall safe "double2long"  c_double2long   :: Double :> Z :> Ok
+foreign import ccall safe "int2float"    c_int2float    :: CInt :> Float :> Ok
+foreign import ccall safe "float2int"    c_float2int    :: Float :> CInt :> Ok
+foreign import ccall safe "int2long"    c_int2long    :: I :> Z :> Ok
+foreign import ccall safe "long2int"    c_long2int    :: Z :> I :> Ok
 
 
 ---------------------------------------------------------------
@@ -502,10 +502,10 @@ stepL :: Vector Z -> Vector Z
 stepL = stepg c_stepL
 
 
-foreign import ccall unsafe "stepF" c_stepF :: TVV Float
-foreign import ccall unsafe "stepD" c_stepD :: TVV Double
-foreign import ccall unsafe "stepI" c_stepI :: TVV CInt
-foreign import ccall unsafe "stepL" c_stepL :: TVV Z
+foreign import ccall safe "stepF" c_stepF :: TVV Float
+foreign import ccall safe "stepD" c_stepD :: TVV Double
+foreign import ccall safe "stepI" c_stepI :: TVV CInt
+foreign import ccall safe "stepL" c_stepL :: TVV Z
 
 --------------------------------------------------------------------------------
 
@@ -518,11 +518,11 @@ conjugateAux fun x = unsafePerformIO $ do
 
 conjugateQ :: Vector (Complex Float) -> Vector (Complex Float)
 conjugateQ = conjugateAux c_conjugateQ
-foreign import ccall unsafe "conjugateQ" c_conjugateQ :: TVV (Complex Float)
+foreign import ccall safe "conjugateQ" c_conjugateQ :: TVV (Complex Float)
 
 conjugateC :: Vector (Complex Double) -> Vector (Complex Double)
 conjugateC = conjugateAux c_conjugateC
-foreign import ccall unsafe "conjugateC" c_conjugateC :: TVV (Complex Double)
+foreign import ccall safe "conjugateC" c_conjugateC :: TVV (Complex Double)
 
 --------------------------------------------------------------------------------
 
@@ -547,11 +547,11 @@ constantAux fun x n = unsafePerformIO $ do
 
 type TConst t = Ptr t -> t :> Ok
 
-foreign import ccall unsafe "constantF" cconstantF :: TConst Float
-foreign import ccall unsafe "constantR" cconstantR :: TConst Double
-foreign import ccall unsafe "constantQ" cconstantQ :: TConst (Complex Float)
-foreign import ccall unsafe "constantC" cconstantC :: TConst (Complex Double)
-foreign import ccall unsafe "constantI" cconstantI :: TConst CInt
-foreign import ccall unsafe "constantL" cconstantL :: TConst Z
+foreign import ccall safe "constantF" cconstantF :: TConst Float
+foreign import ccall safe "constantR" cconstantR :: TConst Double
+foreign import ccall safe "constantQ" cconstantQ :: TConst (Complex Float)
+foreign import ccall safe "constantC" cconstantC :: TConst (Complex Double)
+foreign import ccall safe "constantI" cconstantI :: TConst CInt
+foreign import ccall safe "constantL" cconstantL :: TConst Z
 
 ----------------------------------------------------------------------

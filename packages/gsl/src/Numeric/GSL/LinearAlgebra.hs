@@ -46,7 +46,7 @@ randomVector seed dist n = unsafePerformIO $ do
     (r `applyRaw` id) (c_random_vector (fi seed) ((fi.fromEnum) dist))  #|"randomVector"
     return r
 
-foreign import ccall unsafe "random_vector" c_random_vector :: CInt -> CInt -> TV
+foreign import ccall safe "random_vector" c_random_vector :: CInt -> CInt -> TV
 
 --------------------------------------------------------------------------------
 
@@ -63,7 +63,7 @@ saveMatrix filename fmt m = do
     free charname
     free charfmt
 
-foreign import ccall unsafe "matrix_fprintf" matrix_fprintf :: Ptr CChar -> Ptr CChar -> CInt -> TM
+foreign import ccall safe "matrix_fprintf" matrix_fprintf :: Ptr CChar -> Ptr CChar -> CInt -> TM
 
 --------------------------------------------------------------------------------
 
@@ -76,7 +76,7 @@ fscanfVector filename n = do
     free charname
     return res
 
-foreign import ccall unsafe "vector_fscanf" gsl_vector_fscanf:: Ptr CChar -> TV
+foreign import ccall safe "vector_fscanf" gsl_vector_fscanf:: Ptr CChar -> TV
 
 -- | Saves the elements of a vector, with a given format (%f, %e, %g), to an ASCII file.
 fprintfVector :: FilePath -> String -> Vector Double -> IO ()
@@ -87,7 +87,7 @@ fprintfVector filename fmt v = do
     free charname
     free charfmt
 
-foreign import ccall unsafe "vector_fprintf" gsl_vector_fprintf :: Ptr CChar -> Ptr CChar -> TV
+foreign import ccall safe "vector_fprintf" gsl_vector_fprintf :: Ptr CChar -> Ptr CChar -> TV
 
 -- | Loads a vector from a binary file (the number of elements must be known in advance).
 freadVector :: FilePath -> Int -> IO (Vector Double)
@@ -98,7 +98,7 @@ freadVector filename n = do
     free charname
     return res
 
-foreign import ccall unsafe "vector_fread" gsl_vector_fread:: Ptr CChar -> TV
+foreign import ccall safe "vector_fread" gsl_vector_fread:: Ptr CChar -> TV
 
 -- | Saves the elements of a vector to a binary file.
 fwriteVector :: FilePath -> Vector Double -> IO ()
@@ -107,7 +107,7 @@ fwriteVector filename v = do
     (v `applyRaw` id) (gsl_vector_fwrite charname) #|"gsl_vector_fwrite"
     free charname
 
-foreign import ccall unsafe "vector_fwrite" gsl_vector_fwrite :: Ptr CChar -> TV
+foreign import ccall safe "vector_fwrite" gsl_vector_fwrite :: Ptr CChar -> TV
 
 type PD = Ptr Double                            --
 type TV = CInt -> PD -> IO CInt                 --

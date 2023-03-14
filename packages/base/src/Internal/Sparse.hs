@@ -244,10 +244,10 @@ infixr 8 !#>
 
 --------------------------------------------------------------------------------
 
-foreign import ccall unsafe "smXv"
+foreign import ccall safe "smXv"
   c_smXv :: SMxV
 
-foreign import ccall unsafe "smTXv"
+foreign import ccall safe "smTXv"
   c_smTXv :: SMxV
 
 --------------------------------------------------------------------------------

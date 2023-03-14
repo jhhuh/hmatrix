@@ -112,7 +112,7 @@ check msg f = do
     return ()
 
 -- | description of GSL error codes
-foreign import ccall unsafe "gsl_strerror" gsl_strerror :: CInt -> IO (Ptr CChar)
+foreign import ccall safe "gsl_strerror" gsl_strerror :: CInt -> IO (Ptr CChar)
 
 type PF = Ptr Float
 type PD = Ptr Double

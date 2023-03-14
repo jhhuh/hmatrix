@@ -42,7 +42,7 @@ errorCode n    = "code "++show n
 
 
 -- | clear the fpu
-foreign import ccall unsafe "asm_finit" finit :: IO ()
+foreign import ccall safe "asm_finit" finit :: IO ()
 
 -- | check the error code
 check :: String -> IO CInt -> IO ()
